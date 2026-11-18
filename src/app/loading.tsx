@@ -1,0 +1,1 @@
+export default function Loading(){return <div role="status" className="panel animate-pulse"><div className="h-8 w-48 rounded bg-slate-100"/><div className="mt-5 h-4 w-full rounded bg-slate-100"/><div className="mt-3 h-4 w-2/3 rounded bg-slate-100"/><span className="sr-only">Loading…</span></div>}

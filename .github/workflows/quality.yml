@@ -1,0 +1,27 @@
+name: Code quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  static-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+        env:
+          # Configured CI secrets (in real CI). No production credentials granted to untrusted PRs.
+          DATABASE_URL: postgresql://dummy:dummy@dummy.neon.tech/neondb?sslmode=require
+          SESSION_SECRET: nonproduction-ci-secret-should-be-at-least-thirty-two-characters

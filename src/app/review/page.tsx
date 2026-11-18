@@ -1,0 +1,13 @@
+import Link from 'next/link';
+export const metadata={title:'Project Review'};
+const sections=[
+ {title:'Purpose',desc:'CVVault gives job seekers a single place to maintain multiple CVs, use templates, export PDFs and manage controlled public sharing.'},
+ {title:'Features implemented',desc:'Registration/login, profile fields and photo, CV sections and ordering, revisions, multiple CVs, templates, PDF and print, secure document storage, share links, recruiter search, admin accounts, audit logs and content reports.'},
+ {title:'Security approach',desc:'Database-backed sessions, password hashing, strict role/ownership checks, Zod validation, prepared SQL, CSRF origin checks, rate limiting, private document storage, CSP and audit trails.'},
+ {title:'Testing approach',desc:'Vitest exercises validation, authentication-related policy utilities and unsafe upload rejection; Playwright tests functional and mobile navigation. Database integration checks require an isolated Neon test branch and must be run there.'},
+ {title:'Performance observations',desc:'No reliable Lighthouse score, production latency or PDF timing is claimed without running those measurements. Results must be recorded after installation and deployment.'},
+ {title:'Problems encountered',desc:'Private file access requires routing downloads through authorization; public discovery requires separate privacy controls; optimistic CV revisions prevent stale tab overwrites.'},
+ {title:'Limitations',desc:'No automatic DOCX-to-CV import, no real email delivery for password resets, no malware scanning, no full-text search index, and no independent security audit. These are explicitly documented.'},
+ {title:'Future improvements',desc:'Verified email flows, malware scanning, transactional version writes, richer accessibility reviews, search indexing, and tested disaster recovery drills.'},
+];
+export default function Review(){return <div className="max-w-4xl"><p className="chip">Semester project documentation</p><h1 className="mt-3 text-4xl font-extrabold">Project review & evaluation</h1><p className="mt-4 text-slate-600">Building Web Applications: Web Application Security, Testing, Deployment and Review.</p><div className="mt-8 space-y-4">{sections.map((s,i)=><section className="panel" key={s.title}><div className="flex items-start gap-4"><span className="chip">{String(i+1).padStart(2,'0')}</span><div><h2 className="text-xl font-bold">{s.title}</h2><p className="mt-2 text-sm leading-7 text-slate-600">{s.desc}</p></div></div></section>)}</div><Link href="/security" className="btn-secondary mt-6">Review security controls</Link></div>}

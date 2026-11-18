@@ -1,0 +1,13 @@
+import { z } from 'zod';
+export const email=z.email().max(254).transform(s=>s.trim().toLowerCase());
+export const password=z.string().min(12,'At least 12 characters').max(128).regex(/[A-Z]/,'Include uppercase').regex(/[a-z]/,'Include lowercase').regex(/[0-9]/,'Include a number').regex(/[^A-Za-z0-9]/,'Include a symbol');
+export const registerSchema=z.object({name:z.string().trim().min(2).max(120),email,password});
+export const loginSchema=z.object({email,password:z.string().min(1).max(128)});
+export const profileSchema=z.object({name:z.string().trim().min(2).max(120),phone:z.string().trim().max(40).regex(/^[+\d()\s-]*$/),location:z.string().trim().max(150),headline:z.string().trim().max(180),showPhone:z.boolean(),showEmail:z.boolean()});
+export const itemSchema=z.object({id:z.uuid(),title:z.string().trim().min(1).max(180),subtitle:z.string().max(180).optional(),start:z.string().regex(/^\d{4}-\d{2}$|^$/).optional(),end:z.string().regex(/^\d{4}-\d{2}$|^$/).optional(),description:z.string().max(3000).optional()}).refine(v=>!(v.start&&v.end&&v.start>v.end),{message:'End date must follow start date',path:['end']});
+export const contentSchema=z.object({summary:z.string().max(4000),experience:z.array(itemSchema).max(40),education:z.array(itemSchema).max(30),skills:z.array(itemSchema).max(120),projects:z.array(itemSchema).max(40),certifications:z.array(itemSchema).max(50),languages:z.array(itemSchema).max(30),references:z.array(itemSchema).max(20)});
+export const cvCreateSchema=z.object({title:z.string().trim().min(2).max(150)});
+export const cvUpdateSchema=z.object({title:z.string().trim().min(2).max(150),template:z.enum(['classic','modern','minimal']),content:contentSchema,publicDiscoverable:z.boolean(),revision:z.number().int().min(1)});
+export const shareSchema=z.object({expiresAt:z.iso.datetime({offset:true}).nullable().optional(),hideEmail:z.boolean().default(true),hidePhone:z.boolean().default(true)});
+export const adminUserSchema=z.object({role:z.enum(['user','admin','recruiter']).optional(),suspended:z.boolean().optional()}).refine(x=>x.role!==undefined||x.suspended!==undefined);
+export type CVForm=z.infer<typeof cvUpdateSchema>;
