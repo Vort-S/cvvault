@@ -15,7 +15,6 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-          cache: npm
       - run: npm install --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run lint
@@ -23,5 +22,11 @@ jobs:
       - run: npm run build
         env:
           # Configured CI secrets (in real CI). No production credentials granted to untrusted PRs.
+          DATABASE_URL: postgresql://dummy:dummy@dummy.neon.tech/neondb?sslmode=require
+          SESSION_SECRET: nonproduction-ci-secret-should-be-at-least-thirty-two-characters
+
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
           DATABASE_URL: postgresql://dummy:dummy@dummy.neon.tech/neondb?sslmode=require
           SESSION_SECRET: nonproduction-ci-secret-should-be-at-least-thirty-two-characters

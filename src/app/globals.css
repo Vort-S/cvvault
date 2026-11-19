@@ -1,15 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-:root { color-scheme: light; }
-body { @apply bg-cloud text-ink antialiased; }
-input,select,textarea { @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-ocean focus:ring-2 focus:ring-blue-100; }
-textarea { min-height: 100px; resize: vertical; }
+
+:root { color-scheme: light; --foreground: #1c302c; --accent: #195d4e; --canvas: #f7f7f2; --border: #dedfd6; }
+html { scroll-behavior: smooth; }
+body { @apply bg-cloud text-ink antialiased; font-family: Arial, 'Helvetica Neue', sans-serif; }
+::selection { background: #c4ddce; color: #123b32; }
+a, button, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #90b9a3; outline-offset: 3px; }
+input:not([type='checkbox']):not([type='radio']),select,textarea { @apply w-full rounded-lg border border-[#d8ddd6] bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-[#8b9691] focus:border-ocean focus:ring-2 focus:ring-[#d0e5da]; }
+input[type='checkbox'],input[type='radio'] { accent-color: var(--accent); }
+input:disabled,select:disabled,textarea:disabled { background: #f3f4f0; }
+textarea { min-height: 110px; resize: vertical; }
 button { @apply disabled:cursor-not-allowed disabled:opacity-50; }
-.btn { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-ocean px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-900; }
-.btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:bg-slate-50; }
-.panel { @apply rounded-2xl border border-slate-100 bg-white p-6 shadow-panel; }
-.form-label { @apply mb-2 block text-sm font-medium text-slate-700; }
-.muted { @apply text-sm text-slate-500; }
-.chip { @apply inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-ocean; }
-@media print { body { background: white !important;} .no-print,body > header,body > footer {display:none !important;} .print-area { box-shadow:none !important; border:none !important; padding:0 !important; width:100% !important; } @page { size:A4; margin:15mm; } }
+.btn { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-ocean px-5 py-3 text-sm font-semibold text-white transition hover:bg-pine; box-shadow: 0 3px 0 rgba(0,0,0,.03); }
+.btn-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#ced7ce] bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-ocean hover:bg-[#eef4ef]; }
+.btn-quiet { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-ocean transition hover:bg-[#e9f2eb]; }
+.panel { @apply rounded-xl border border-[#e0e4dc] bg-white p-6 shadow-panel; }
+.form-label { @apply mb-2 block text-sm font-semibold text-ink; }
+.muted { @apply text-sm leading-6 text-[#697873]; }
+.chip { @apply inline-flex items-center gap-1.5 rounded-md bg-[#e7f0e9] px-3 py-1.5 text-xs font-semibold tracking-wide text-ocean; }
+.eyebrow { @apply text-xs font-bold uppercase tracking-[.2em] text-ocean; }
+.display-title { font-family: Georgia, Cambria, 'Times New Roman', serif; font-weight: 400; letter-spacing: -.045em; line-height: 1.06; }
+.section-title { font-family: Georgia, Cambria, 'Times New Roman', serif; font-weight: 400; letter-spacing: -.035em; line-height: 1.18; }
+.hairline { border-color: #dedfd6; }
+.page-head { @apply mb-8 flex flex-wrap items-end justify-between gap-5 border-b border-[#dce1d8] pb-8; }
+.soft-status { @apply rounded-lg border border-[#d7e8dd] bg-[#edf6ef] px-4 py-3 text-sm text-ocean; }
+.field-help { @apply mt-1 block text-xs leading-5 text-[#75837d]; }
+.paper-shadow { box-shadow: 0 32px 65px rgba(22,46,38,.13), 0 2px 5px rgba(22,46,38,.04); }
+.nav-link { @apply inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-[#53655e] transition hover:bg-[#eef3ec] hover:text-ocean; }
+.nav-link-active { @apply bg-[#e4eee5] text-ocean; }
+.fine-divider { border-top: 1px solid #dee3da; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+@media print { body { background: white!important; } .no-print,body > header,body > footer { display: none!important; } .print-area { box-shadow: none!important; border: 0!important; padding:0!important; width:100%!important; } @page { size:A4; margin:15mm; } }
