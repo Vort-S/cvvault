@@ -12,8 +12,17 @@ const templates=[{key:'classic',title:'Classic',description:'Traditional, struct
 export default function Editor({id}:{id:string}){
  const [cv,setCV]=useState<CVRecord|null>(null),[profile,setProfile]=useState<Profile|undefined>(),[userEmail,setUserEmail]=useState(''),[saving,setSaving]=useState(false),[message,setMessage]=useState(''),[dirty,setDirty]=useState(false),[workspaceTab,setWorkspaceTab]=useState<'content'|'design'|'share'|'history'>('content');
  const [versions,setVersions]=useState<{revision:number;createdAt:string}[]>([]),[links,setLinks]=useState<{id:string;revokedAt:string|null;expiresAt:string|null}[]>([]),[newLink,setNewLink]=useState(''),[expiry,setExpiry]=useState(''),[includeEmail,setIncludeEmail]=useState(false),[includePhone,setIncludePhone]=useState(false),[section,setSection]=useState('summary'),[restoreTarget,setRestoreTarget]=useState<number|null>(null);
- async function load(){try{const [r,p,me,v,s]=await Promise.all([fetch(`/api/cvs/${id}`,{cache:'no-store'}),fetch('/api/profile'),fetch('/api/auth/me'),fetch(`/api/cvs/${id}/versions`),fetch(`/api/cvs/${id}/share`)]);const d=await r.json();if(r.ok){setCV(d.cv);setDirty(false);}else setMessage(d.error||'Unable to open this CV.');if(p.ok)setProfile((await p.json()).profile);if(me.ok)setUserEmail((await me.json()).user?.email||'');if(v.ok)setVersions((await v.json()).versions);if(s.ok)setLinks((await s.json()).links);}catch{setMessage('Unable to reach the server. Check your connection and try again.');}}
- useEffect(()=>{void load();},[id]);
+ useEffect(()=>{
+  const controller=new AbortController();
+  Promise.all([fetch(`/api/cvs/${id}`,{cache:'no-store',signal:controller.signal}),fetch('/api/profile',{signal:controller.signal}),fetch('/api/auth/me',{signal:controller.signal}),fetch(`/api/cvs/${id}/versions`,{signal:controller.signal}),fetch(`/api/cvs/${id}/share`,{signal:controller.signal})])
+   .then(async ([r,p,me,v,s])=>{
+     const d=await r.json();const profileData=p.ok?await p.json():null;const meData=me.ok?await me.json():null;const versionsData=v.ok?await v.json():null;const linksData=s.ok?await s.json():null;
+     if(controller.signal.aborted)return;
+     if(r.ok){setCV(d.cv);setDirty(false);}else setMessage(d.error||'Unable to open this CV.');
+     if(profileData)setProfile(profileData.profile);if(meData)setUserEmail(meData.user?.email||'');if(versionsData)setVersions(versionsData.versions);if(linksData)setLinks(linksData.links);
+   }).catch(()=>{if(!controller.signal.aborted)setMessage('Unable to reach the server. Check your connection and try again.');});
+  return()=>controller.abort();
+ },[id]);
  useEffect(()=>{const warning=(e:BeforeUnloadEvent)=>{if(dirty){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',warning);return()=>window.removeEventListener('beforeunload',warning);},[dirty]);
  function change(patch:Partial<CVRecord>){setDirty(true);setCV(old=>old?{...old,...patch}:old);}
  function updateItem(key:Exclude<keyof CVContent,'summary'>,itemId:string,patch:Partial<CVItem>){if(!cv)return;change({content:{...cv.content,[key]:cv.content[key].map(item=>item.id===itemId?{...item,...patch}:item)}});}

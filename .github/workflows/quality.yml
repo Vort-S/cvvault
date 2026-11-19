@@ -24,3 +24,9 @@ jobs:
           # Configured CI secrets (in real CI). No production credentials granted to untrusted PRs.
           DATABASE_URL: postgresql://dummy:dummy@dummy.neon.tech/neondb?sslmode=require
           SESSION_SECRET: nonproduction-ci-secret-should-be-at-least-thirty-two-characters
+
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
+          DATABASE_URL: postgresql://dummy:dummy@dummy.neon.tech/neondb?sslmode=require
+          SESSION_SECRET: nonproduction-ci-secret-should-be-at-least-thirty-two-characters
